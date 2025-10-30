@@ -4,3 +4,4 @@ transformers
 emoji
 nltk
 pandas
+scikit-learn
