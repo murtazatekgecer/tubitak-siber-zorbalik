@@ -15,10 +15,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # --- 1. Gerekli Verilerin Kurulumu ---
-
 # NLTK stopwords (etkisiz kelimeler) listesini indirme
-# Streamlit sunucusu her başladığında NLTK verisini kontrol eder
-# (Bunu daha sağlam hale getirmek için bir setup.sh dosyası da ekleyeceğiz)
 @st.cache_resource
 def load_nltk_data():
     try:
@@ -31,9 +28,10 @@ turkce_stopwords = stopwords.words('turkish')
 
 # !!! DEĞİŞTİRİN !!!
 # Modeli Hugging Face Hub'dan çekmek için yolu güncelleyin.
-# 'KULLANICI_ADINIZ' kısmını Adım 4'teki Hugging Face kullanıcı adınızla değiştirin.
+# 'KULLANICI_ADINIZ' kısmını Hugging Face kullanıcı adınızla değiştirin.
+# (Önceki konuşmalarımızdan yola çıkarak 'Scaran' olduğunu varsayıyorum)
 MODEL_YOLU = "Scaran/DijitalSessizlik-BERT-Modeli" 
-# Örn: MODEL_YOLU = "ahmet_yılmaz/DijitalSessizlik-BERT-Modeli"
+# Örn: MODEL_YOLU = "Scaran/DijitalSessizlik-BERT-Modeli"
 
 # Sınıf isimlerimizi tanımlıyoruz
 SINIF_ADLARI = ['Açık Zorbalık', 'Örtük Zorbalık', 'Nötr']
@@ -64,15 +62,10 @@ def load_model(model_path):
         st.success("Model başarıyla Hugging Face Hub'dan yüklendi.")
         return model, tokenizer
     except Exception as e:
-        # Eğer kullanıcı adını girmeyi unuttuysa hata ver
-        if "KULLANICI_ADINIZ" in model_path:
-            st.error("HATA: app.py dosyasındaki 'MODEL_YOLU' değişkenini güncellemediniz.")
-            st.code("MODEL_YOLU = 'KULLANICI_ADINIZ/DijitalSessizlik-BERT-Modeli'")
-            st.stop()
-        else:
-            st.error(f"Model yüklenirken bir hata oluştu: {e}")
-            st.info("Modelin Hugging Face Hub'da 'public' (herkese açık) olarak ayarlandığından emin olun.")
-            return None, None
+        st.error(f"Model yüklenirken bir hata oluştu: {e}")
+        st.info(f"Model Yolu: {model_path}")
+        st.info("Lütfen modelinizin Hugging Face Hub'da 'Public' (Herkese Açık) olarak ayarlandığından emin olun.")
+        return None, None
 
 # --- 4. Streamlit Arayüz Kodu ---
 st.title("Dijital Sessizlik: Siber Zorbalık Tespit Modeli (BERT)")
