@@ -30,7 +30,8 @@ turkce_stopwords = stopwords.words('turkish')
 # Modeli Hugging Face Hub'dan çekmek için yolu güncelleyin.
 # 'KULLANICI_ADINIZ' kısmını Hugging Face kullanıcı adınızla değiştirin.
 # (Önceki konuşmalarımızdan yola çıkarak 'Scaran' olduğunu varsayıyorum)
-MODEL_YOLU = "Scaran/DijitalSessizlik-BERT-Modeli" 
+MODEL_YOLU = "savasy/bert-base-turkish-sentiment-cased"
+#MODEL_YOLU = "Scaran/DijitalSessizlik-BERT-Modeli" 
 # Örn: MODEL_YOLU = "Scaran/DijitalSessizlik-BERT-Modeli"
 
 # Sınıf isimlerimizi tanımlıyoruz
