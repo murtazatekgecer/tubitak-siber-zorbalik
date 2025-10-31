@@ -14,8 +14,10 @@ import warnings
 # Gereksiz uyarıları gizle
 warnings.filterwarnings("ignore")
 
-# --- 1. Gerekli Verilerin Kurulumu ---
+# --- 1. Gerekli Verilerin Kurulumu (Sunucu Başlangıcı) ---
+
 # NLTK stopwords (etkisiz kelimeler) listesini indirme
+# @st.cache_resource, bu fonksiyonun sadece bir kez çalışmasını sağlar
 @st.cache_resource
 def load_nltk_data():
     try:
@@ -26,19 +28,16 @@ load_nltk_data()
 turkce_stopwords = stopwords.words('turkish')
 
 
-# !!! DEĞİŞTİRİN !!!
-# Modeli Hugging Face Hub'dan çekmek için yolu güncelleyin.
-# 'KULLANICI_ADINIZ' kısmını Hugging Face kullanıcı adınızla değiştirin.
-# (Önceki konuşmalarımızdan yola çıkarak 'Scaran' olduğunu varsayıyorum)
-#MODEL_YOLU = "savasy/bert-base-turkish-sentiment-cased"
-MODEL_YOLU = "Scaran/DijitalSessizlik-BERT-Modeli" 
-# Örn: MODEL_YOLU = "Scaran/DijitalSessizlik-BERT-Modeli"
+# !!! ÖNEMLİ !!!
+# Modelinizin Hugging Face Hub'daki yolu
+# "Scaran/DijitalSessizlik-BERT-6000" olarak ayarlandı
+MODEL_YOLU = "Scaran/DijitalSessizlik-BERT-6000" 
 
-# Sınıf isimlerimizi tanımlıyoruz
+# Sınıf isimlerimizi (modelin etiket sırasına göre) tanımlıyoruz
 SINIF_ADLARI = ['Açık Zorbalık', 'Örtük Zorbalık', 'Nötr']
 
 
-# --- 2. Metin Ön İşleme Fonksiyonu (Adım 1'deki ile aynı) ---
+# --- 2. Metin Ön İşleme Fonksiyonu ---
 def preprocess_text(text):
     text = str(text).lower() # Girdiyi string'e zorla ve küçük harfe çevir
     text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
@@ -54,6 +53,7 @@ def preprocess_text(text):
     return text
 
 # --- 3. Model Yükleme (Cache ile) ---
+# @st.cache_resource, modeli sadece bir kez yükler ve hafızada tutar.
 @st.cache_resource
 def load_model(model_path):
     try:
@@ -63,9 +63,10 @@ def load_model(model_path):
         st.success("Model başarıyla Hugging Face Hub'dan yüklendi.")
         return model, tokenizer
     except Exception as e:
+        # Hata durumunda bilgilendirme
         st.error(f"Model yüklenirken bir hata oluştu: {e}")
-        st.info(f"Model Yolu: {model_path}")
-        st.info("Lütfen modelinizin Hugging Face Hub'da 'Public' (Herkese Açık) olarak ayarlandığından emin olun.")
+        st.info(f"Yüklenmeye çalışılan Model Yolu: {model_path}")
+        st.info("Lütfen modelinizin (Scaran/DijitalSessizlik-BERT-6000) Hugging Face Hub'da 'Public' (Herkese Açık) olarak ayarlandığından emin olun.")
         return None, None
 
 # --- 4. Streamlit Arayüz Kodu ---
